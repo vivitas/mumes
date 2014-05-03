@@ -1,4 +1,7 @@
+#include <OpenEXR/half.h>
+
 #include "filters.h"
+#include "stdlib.h"
 struct t_my_rgba
 {
     float r;
@@ -6,18 +9,27 @@ struct t_my_rgba
     float b;
     float a;
 };
-t_my_rgba&
+t_my_rgba
 to_my_rgba
 (
-        t_my_rgba& dest,
         Rgba& src
 )
 {
+    t_my_rgba dest;
     dest.a = src.a.operator  float();
     dest.r = src.r.operator  float();
     dest.g = src.g.operator  float();
     dest.b = src.b.operator  float();
     return dest;
+}
+Rgba
+from_my_rgba
+(
+        t_my_rgba &src
+)
+{
+    Rgba result(half(src.r), half(src.g), half(src.b), half(src.a));
+    return result;
 }
 t_my_rgba
 divide
@@ -152,7 +164,7 @@ copy
 {
     for (int x = 0; x < width; ++x)
         for (int y = 0; y < height; ++y)
-            to_my_rgba(dest[y*width + x], src[y][x]);            
+            dest[y*width + x] = to_my_rgba(src[y][x]);            
 }
 void
 copy
@@ -164,8 +176,8 @@ copy
 )
 {
     for (int x = 0; x < width; ++x)
-        for (int y = 0; y < height; ++y);
-            //dest[y*width + x] = src[y*width + x];
+        for (int y = 0; y < height; ++y)
+            dest[y][x] = from_my_rgba(src[y*width + x]);
 }
 void
 cpu_filter
@@ -176,32 +188,35 @@ cpu_filter
         t_times &time
 )
 {   
-    t_my_rgba buffer[width][height];
-    t_my_rgba output[width][height];
+    t_my_rgba *buffer = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
+    t_my_rgba *output = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
     
-    copy(&buffer[0][0], pixels, width, height);
+    copy(buffer, pixels, width, height);
     
     for (int x = 1; x < width - 1; ++x)
     {
         for (int y = 1; y < height - 1; ++y)
         {
-            output[y][x] = cpu_middle_filter(&buffer[0][0], x, y, width);
+            output[y*width + x] = cpu_middle_filter(buffer, x, y, width);
         }
     }
     for (int x = 1; x < width - 1; ++x)
     {
-        output[0][x] = cpu_y_edge_filter(&buffer[0][0], x, 0, 1, width);
-        output[height-1][x] = cpu_y_edge_filter(&buffer[0][0], x, height - 1, -1, width);
+        output[0*width + x] = cpu_y_edge_filter(buffer, x, 0, 1, width);
+        output[(height-1)*width + x] = cpu_y_edge_filter(buffer, x, height - 1, -1, width);
     }
     for (int y = 1; y < height - 1; ++y)
     {
-        output[y][0] = cpu_x_edge_filter(&buffer[0][0], 0, y, 1, width);
-        output[y][width-1] = cpu_x_edge_filter(&buffer[0][0], width-1, y, -1, width);
+        output[y*width+0] = cpu_x_edge_filter(buffer, 0, y, 1, width);
+        output[y*width + width-1] = cpu_x_edge_filter(buffer, width-1, y, -1, width);
     }
-    output[0][0] = cpu_corner(&buffer[0][0], 0, 0, 1, 1, width);
-    output[0][width-1] = cpu_corner(&buffer[0][0], width-1, 0, -1, 1, width);
-    output[height-1][0] = cpu_corner(&buffer[0][0], 0, height-1, 1, -1, width);
-    output[height-1][width-1] = cpu_corner(&buffer[0][0], width-1, height-1, -1, -1, width);
+    output[0*width + 0] = cpu_corner(buffer, 0, 0, 1, 1, width);
+    output[0*width + width-1] = cpu_corner(buffer, width-1, 0, -1, 1, width);
+    output[(height-1)*width+0] = cpu_corner(buffer, 0, height-1, 1, -1, width);
+    output[(height-1)*width + width-1] = cpu_corner(buffer, width-1, height-1, -1, -1, width);
     
-    copy(pixels, &output[0][0], width, height);           
+    copy(pixels, output, width, height);
+    
+    free(output);
+    free(buffer);
 }

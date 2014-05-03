@@ -21,7 +21,6 @@
 using namespace std;
 
 Array2D<Rgba> pixels(1, 1);
-Array2D<Rgba> buffer(1, 2);
         
 int
 main
@@ -37,13 +36,10 @@ main
         string input_file_name = k_input_directory + *i;
         string output_file_name = k_output_directory + *i;
         cout << endl << "Working on: " << *i << endl;
-
-        
         int width;
         int height;
         readRgba1(input_file_name.c_str(), pixels, width, height);
         t_times cpu_time, gpu_time;
-        buffer.resizeErase(width, height);
         cpu_filter(pixels, width, height, cpu_time);
         writeRgba1(output_file_name.c_str(), &pixels[0][0], width, height);
     }
