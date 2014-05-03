@@ -20,10 +20,10 @@ struct t_times
 
 using namespace Imf;
 
-Array2D<Rgba>
+void
 cpu_filter
 (
-        Array2D<Rgba> &pixels, 
+        Array2D<Rgba> &pixels,
         int width,
         int height,
         t_times &time
