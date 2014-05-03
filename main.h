@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-const string k_input_directory = "/media/filip/Local/downloads/exr/";
+const string k_input_directory = "/media/filip/Local/dev/exr/";
 vector<string> get_all_files_from_directory(string directory);
 
 #endif	/* MAIN_H */
