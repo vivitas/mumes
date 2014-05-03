@@ -8,17 +8,17 @@ CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux-x86
-CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=mumes
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/mumes
+CND_ARTIFACT_DIR_Debug=/home/filip/dev/mumes
+CND_ARTIFACT_NAME_Debug=out
+CND_ARTIFACT_PATH_Debug=/home/filip/dev/mumes/out
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug=mumes.tar
 CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/mumes.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
-CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=mumes
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/mumes
+CND_ARTIFACT_DIR_Release=/home/filip/dev/mumes
+CND_ARTIFACT_NAME_Release=out
+CND_ARTIFACT_PATH_Release=/home/filip/dev/mumes/out
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=mumes.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/mumes.tar

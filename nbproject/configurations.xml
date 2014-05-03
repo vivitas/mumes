@@ -42,6 +42,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
+          <output>/home/filip/dev/mumes/out</output>
           <linkerLibItems>
             <linkerLibLibItem>IlmImf</linkerLibLibItem>
             <linkerLibLibItem>Half</linkerLibLibItem>
@@ -63,6 +64,10 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>/usr/include</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+          </incDir>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -70,6 +75,16 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <output>/home/filip/dev/mumes/out</output>
+          <linkerLibItems>
+            <linkerLibLibItem>IlmImf</linkerLibLibItem>
+            <linkerLibLibItem>Half</linkerLibLibItem>
+            <linkerLibLibItem>Iex</linkerLibLibItem>
+            <linkerLibLibItem>Imath</linkerLibLibItem>
+            <linkerLibLibItem>IlmThread</linkerLibLibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>

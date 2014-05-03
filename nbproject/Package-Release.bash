@@ -12,8 +12,8 @@ CND_DISTDIR=dist
 CND_BUILDDIR=build
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mumes
-OUTPUT_BASENAME=mumes
+OUTPUT_PATH=/home/filip/dev/mumes/out
+OUTPUT_BASENAME=out
 PACKAGE_TOP_DIR=mumes/
 
 # Functions

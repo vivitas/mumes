@@ -55,11 +55,11 @@ LDLIBSOPTIONS=-lIlmImf -lHalf -lIex -lImath -lIlmThread
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mumes
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk /home/filip/dev/mumes/out
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mumes: ${OBJECTFILES}
-	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mumes ${OBJECTFILES} ${LDLIBSOPTIONS} 
+/home/filip/dev/mumes/out: ${OBJECTFILES}
+	${MKDIR} -p /home/filip/dev/mumes
+	${LINK.cc} -o /home/filip/dev/mumes/out ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -72,7 +72,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mumes
+	${RM} /home/filip/dev/mumes/out
 
 # Subprojects
 .clean-subprojects:
