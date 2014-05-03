@@ -35,7 +35,10 @@ vector<string> get_all_files_from_directory(string directory_path)
         struct dirent *entry = readdir(directory);
         while (entry != NULL)
         {
-            result.push_back(string(entry->d_name));
+            if (entry->d_name[0] != '.')
+            {
+                result.push_back(string(entry->d_name));
+            }
             entry = readdir(directory);
         }
         closedir(directory);
