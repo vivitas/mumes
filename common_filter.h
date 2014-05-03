@@ -58,6 +58,19 @@ copy
         int width,
         int height
 );
-
+void
+alloc_buffers
+(
+        t_my_rgba* &input_buffer,
+        t_my_rgba* &output_buffer,
+        int width,
+        int height
+);
+void
+free_buffers
+(
+        t_my_rgba *input,
+        t_my_rgba *output
+);
 #endif	/* COMMON_FILTER_H */
 

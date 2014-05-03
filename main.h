@@ -17,5 +17,12 @@ using namespace std;
 const string k_input_directory = "/media/filip/Local/dev/exr/";
 const string k_output_directory = "/media/filip/Local/dev/exr_output/";
 
+struct t_times
+{
+    int transfer_to;
+    int processing;
+    int transfer_from;
+};
+
 #endif	/* MAIN_H */
 

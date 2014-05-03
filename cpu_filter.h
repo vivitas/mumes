@@ -8,15 +8,10 @@
 #ifndef CPUFILTER_H
 #define	CPUFILTER_H
 
+#include "main.h"
+
 #include <ImfArray.h>
 #include <ImfRgba.h>
-
-struct t_times
-{
-    int transfer_to;
-    int processing;
-    int transfer_from;
-};
 
 using namespace Imf;
 

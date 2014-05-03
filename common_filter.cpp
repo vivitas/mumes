@@ -1,5 +1,18 @@
 #include "common_filter.h"
-
+#include "stdlib.h"
+#include <cuda.h>
+void
+alloc_buffers
+(
+        t_my_rgba* &input_buffer,
+        t_my_rgba* &output_buffer,
+        int width,
+        int height
+)
+{
+    input_buffer = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
+    output_buffer = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
+}
 t_my_rgba
 to_my_rgba
 (
@@ -22,6 +35,7 @@ from_my_rgba
     Rgba result(half(src.r), half(src.g), half(src.b), half(src.a));
     return result;
 }
+
 t_my_rgba
 divide
 (
@@ -36,6 +50,7 @@ divide
     result.b = pixel.b/coef;
     return result;
 }
+
 t_my_rgba&
 increment
 (
@@ -74,4 +89,14 @@ copy
     for (int x = 0; x < width; ++x)
         for (int y = 0; y < height; ++y)
             dest[y][x] = from_my_rgba(src[y*width + x]);
+}
+void
+free_buffers
+(
+        t_my_rgba *input,
+        t_my_rgba *output
+)
+{
+    free(input);
+    free(output);
 }

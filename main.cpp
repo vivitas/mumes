@@ -10,6 +10,7 @@
 #include "main.h"
 #include "file_system_operations.h"
 #include "cpu_filter.h"
+#include "gpu_filter.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -41,9 +42,15 @@ main
         readRgba1(input_file_name.c_str(), pixels, width, height);
         t_times cpu_time, gpu_time;
         cpu_filter(pixels, width, height, cpu_time);
+        cout << "CPU:" << endl;
         cout << "transfer to   : " << cpu_time.transfer_to << endl;
         cout << "processing    : " << cpu_time.processing << endl;
         cout << "transfer from : " << cpu_time.transfer_from << endl;
+        gpu_filter(pixels, width, height, gpu_time);
+        cout << "GPU:" << endl;
+        cout << "transfer to   : " << gpu_time.transfer_to << endl;
+        cout << "processing    : " << gpu_time.processing << endl;
+        cout << "transfer from : " << gpu_time.transfer_from << endl;
         writeRgba1(output_file_name.c_str(), &pixels[0][0], width, height);
     }
     return 0;

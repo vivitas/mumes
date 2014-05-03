@@ -15,8 +15,8 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=g++
-CXX=g++
+CCC=nvcc
+CXX=nvcc
 FC=gfortran
 AS=as
 
@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/common_filter.o \
 	${OBJECTDIR}/file_system_operations.o \
+	${OBJECTDIR}/gpu_filter.o \
 	${OBJECTDIR}/cpu_filter.o
 
 
@@ -68,33 +69,31 @@ LDLIBSOPTIONS=-lIlmImf -lHalf -lIex -lImath -lIlmThread
 
 ${OBJECTDIR}/open_exr_io.o: open_exr_io.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/open_exr_io.o open_exr_io.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/open_exr_io.o open_exr_io.cpp
 
 ${OBJECTDIR}/ScopeClock.o: ScopeClock.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ScopeClock.o ScopeClock.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/ScopeClock.o ScopeClock.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/common_filter.o: common_filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/common_filter.o common_filter.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/common_filter.o common_filter.cpp
 
 ${OBJECTDIR}/file_system_operations.o: file_system_operations.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/file_system_operations.o file_system_operations.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/file_system_operations.o file_system_operations.cpp
+
+${OBJECTDIR}/gpu_filter.o: gpu_filter.cu 
+	${MKDIR} -p ${OBJECTDIR}
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/gpu_filter.o gpu_filter.cu
 
 ${OBJECTDIR}/cpu_filter.o: cpu_filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/cpu_filter.o cpu_filter.cpp
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -o ${OBJECTDIR}/cpu_filter.o cpu_filter.cpp
 
 # Subprojects
 .build-subprojects:
@@ -106,8 +105,3 @@ ${OBJECTDIR}/cpu_filter.o: cpu_filter.cpp
 
 # Subprojects
 .clean-subprojects:
-
-# Enable dependency checking
-.dep.inc: .depcheck-impl
-
-include .dep.inc

@@ -8,6 +8,7 @@
       <itemPath>common_filter.h</itemPath>
       <itemPath>cpu_filter.h</itemPath>
       <itemPath>file_system_operations.h</itemPath>
+      <itemPath>gpu_filter.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>open_exr_io.h</itemPath>
     </logicalFolder>
@@ -22,6 +23,7 @@
       <itemPath>common_filter.cpp</itemPath>
       <itemPath>cpu_filter.cpp</itemPath>
       <itemPath>file_system_operations.cpp</itemPath>
+      <itemPath>gpu_filter.cu</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>open_exr_io.cpp</itemPath>
     </logicalFolder>
@@ -43,9 +45,14 @@
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandlineTool>nvcc</commandlineTool>
+        </cTool>
         <ccTool>
+          <developmentMode>0</developmentMode>
           <commandlineTool>nvcc</commandlineTool>
           <incDir>
             <pElem>/usr/include</pElem>
@@ -54,6 +61,7 @@
         </ccTool>
         <linkerTool>
           <output>/home/filip/dev/mumes/out</output>
+          <commandlineTool>nvcc</commandlineTool>
           <linkerLibItems>
             <linkerLibLibItem>IlmImf</linkerLibLibItem>
             <linkerLibLibItem>Half</linkerLibLibItem>
@@ -63,11 +71,17 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="gpu_filter.cu" ex="false" tool="1" flavor="0">
+        <ccTool>
+          <commandlineTool>nvcc</commandlineTool>
+        </ccTool>
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
       </toolsSet>
       <compileType>
         <cTool>
@@ -75,6 +89,7 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <commandlineTool>nvcc</commandlineTool>
           <incDir>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/OpenEXR</pElem>
@@ -97,6 +112,11 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="gpu_filter.cu" ex="false" tool="1" flavor="0">
+        <ccTool>
+          <commandlineTool>nvcc</commandlineTool>
+        </ccTool>
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

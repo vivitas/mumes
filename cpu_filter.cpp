@@ -2,7 +2,6 @@
 
 #include "common_filter.h"
 #include "cpu_filter.h"
-#include "stdlib.h"
 
 #include "ScopeClock.h"
 
@@ -111,8 +110,10 @@ cpu_filter
         t_times &cpu_time
 )
 {   
-    t_my_rgba *buffer = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
-    t_my_rgba *output = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
+    t_my_rgba *buffer;
+    t_my_rgba *output;
+    
+    alloc_buffers(buffer, output, width, height);
     
     {
         ScopeClock dummy(&cpu_time.transfer_to);
@@ -146,6 +147,5 @@ cpu_filter
         ScopeClock dummy(&cpu_time.transfer_from);
         copy(pixels, output, width, height);
     }
-    free(output);
-    free(buffer);
+    free_buffers(output, buffer);
 }
