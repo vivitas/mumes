@@ -34,7 +34,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/open_exr_io.o \
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/file_system_operations.o
 
 
 # C Compiler Flags
@@ -61,10 +63,20 @@ LDLIBSOPTIONS=-lIlmImf -lHalf -lIex -lImath -lIlmThread
 	${MKDIR} -p /home/filip/dev/mumes
 	${LINK.cc} -o /home/filip/dev/mumes/out ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/open_exr_io.o: open_exr_io.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/open_exr_io.o open_exr_io.cpp
+
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/file_system_operations.o: file_system_operations.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/file_system_operations.o file_system_operations.cpp
 
 # Subprojects
 .build-subprojects:
