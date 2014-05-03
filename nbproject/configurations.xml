@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>ScopeClock.h</itemPath>
       <itemPath>common_filter.h</itemPath>
       <itemPath>cpu_filter.h</itemPath>
       <itemPath>file_system_operations.h</itemPath>
@@ -17,6 +18,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>ScopeClock.cpp</itemPath>
       <itemPath>common_filter.cpp</itemPath>
       <itemPath>cpu_filter.cpp</itemPath>
       <itemPath>file_system_operations.cpp</itemPath>
@@ -34,8 +36,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>ScopeClock.cpp</itemPath>
-    <itemPath>ScopeClock.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -46,6 +46,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <commandlineTool>nvcc</commandlineTool>
           <incDir>
             <pElem>/usr/include</pElem>
             <pElem>/usr/include/OpenEXR</pElem>
