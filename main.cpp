@@ -9,6 +9,7 @@
 #include "open_exr_io.h"
 #include "main.h"
 #include "file_system_operations.h"
+#include "filters.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -38,9 +39,8 @@ main
         int width;
         int height;
         readRgba1(input_file_name.c_str(), pixels, width, height);
-        for (int x = 0; x < width; ++x)
-            for (int y = 0; y < height; ++y) {
-            }
+        t_times cpu_time, gpu_time;
+        cpu_filter(pixels, width, height, cpu_time);
         writeRgba1(output_file_name.c_str(), &pixels[0][0], width, height);
 
     }
