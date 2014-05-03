@@ -5,8 +5,8 @@
  * Created on May 3, 2014, 2:22 PM
  */
 
-#ifndef FILTERS_H
-#define	FILTERS_H
+#ifndef CPUFILTER_H
+#define	CPUFILTER_H
 
 #include <ImfArray.h>
 #include <ImfRgba.h>
@@ -29,5 +29,5 @@ cpu_filter
         t_times &time
 );
 
-#endif	/* FILTERS_H */
+#endif	/* CPU_FILTER_H */
 

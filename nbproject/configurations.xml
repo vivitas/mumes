@@ -4,8 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>common_filter.h</itemPath>
+      <itemPath>cpu_filter.h</itemPath>
       <itemPath>file_system_operations.h</itemPath>
-      <itemPath>filters.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>open_exr_io.h</itemPath>
     </logicalFolder>
@@ -16,8 +17,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>common_filter.cpp</itemPath>
+      <itemPath>cpu_filter.cpp</itemPath>
       <itemPath>file_system_operations.cpp</itemPath>
-      <itemPath>filters.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>open_exr_io.cpp</itemPath>
     </logicalFolder>
@@ -32,6 +34,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>ScopeClock.cpp</itemPath>
+    <itemPath>ScopeClock.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

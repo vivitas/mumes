@@ -1,63 +1,11 @@
 #include <OpenEXR/half.h>
 
-#include "filters.h"
+#include "common_filter.h"
+#include "cpu_filter.h"
 #include "stdlib.h"
-struct t_my_rgba
-{
-    float r;
-    float g;
-    float b;
-    float a;
-};
-t_my_rgba
-to_my_rgba
-(
-        Rgba& src
-)
-{
-    t_my_rgba dest;
-    dest.a = src.a.operator  float();
-    dest.r = src.r.operator  float();
-    dest.g = src.g.operator  float();
-    dest.b = src.b.operator  float();
-    return dest;
-}
-Rgba
-from_my_rgba
-(
-        t_my_rgba &src
-)
-{
-    Rgba result(half(src.r), half(src.g), half(src.b), half(src.a));
-    return result;
-}
-t_my_rgba
-divide
-(
-        t_my_rgba& pixel,
-        float coef
-)
-{
-    t_my_rgba result;
-    result.a = pixel.a/coef;
-    result.r = pixel.r/coef;
-    result.g = pixel.g/coef;
-    result.b = pixel.b/coef;
-    return result;
-}
-t_my_rgba&
-increment
-(
-        t_my_rgba& dst,
-        t_my_rgba src
-)
-{
-    dst.a += src.a;
-    dst.r += src.r;
-    dst.g += src.g;
-    dst.b += src.b;
-    return dst;
-}
+
+#include "ScopeClock.h"
+
 t_my_rgba
 cpu_middle_filter
 (
@@ -153,70 +101,51 @@ cpu_corner
         }
     return result;
 }
-void
-copy
-(
-        t_my_rgba *dest,
-        Array2D<Rgba> &src,
-        int width,
-        int height
-)
-{
-    for (int x = 0; x < width; ++x)
-        for (int y = 0; y < height; ++y)
-            dest[y*width + x] = to_my_rgba(src[y][x]);            
-}
-void
-copy
-(
-        Array2D<Rgba> &dest,
-        t_my_rgba *src,
-        int width,
-        int height
-)
-{
-    for (int x = 0; x < width; ++x)
-        for (int y = 0; y < height; ++y)
-            dest[y][x] = from_my_rgba(src[y*width + x]);
-}
+
 void
 cpu_filter
 (
         Array2D<Rgba> &pixels,
         int width,
         int height,
-        t_times &time
+        t_times &cpu_time
 )
 {   
     t_my_rgba *buffer = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
     t_my_rgba *output = (t_my_rgba*)malloc(width*height*sizeof(t_my_rgba));
     
-    copy(buffer, pixels, width, height);
-    
-    for (int x = 1; x < width - 1; ++x)
     {
+        ScopeClock dummy(&cpu_time.transfer_to);
+        copy(buffer, pixels, width, height);
+    }
+    {
+        ScopeClock dummy(&cpu_time.processing);
+        for (int x = 1; x < width - 1; ++x)
+        {
+            for (int y = 1; y < height - 1; ++y)
+            {
+                output[y*width + x] = cpu_middle_filter(buffer, x, y, width);
+            }
+        }
+        for (int x = 1; x < width - 1; ++x)
+        {
+            output[0*width + x] = cpu_y_edge_filter(buffer, x, 0, 1, width);
+            output[(height-1)*width + x] = cpu_y_edge_filter(buffer, x, height - 1, -1, width);
+        }
         for (int y = 1; y < height - 1; ++y)
         {
-            output[y*width + x] = cpu_middle_filter(buffer, x, y, width);
+            output[y*width+0] = cpu_x_edge_filter(buffer, 0, y, 1, width);
+            output[y*width + width-1] = cpu_x_edge_filter(buffer, width-1, y, -1, width);
         }
+        output[0*width + 0] = cpu_corner(buffer, 0, 0, 1, 1, width);
+        output[0*width + width-1] = cpu_corner(buffer, width-1, 0, -1, 1, width);
+        output[(height-1)*width+0] = cpu_corner(buffer, 0, height-1, 1, -1, width);
+        output[(height-1)*width + width-1] = cpu_corner(buffer, width-1, height-1, -1, -1, width);
     }
-    for (int x = 1; x < width - 1; ++x)
     {
-        output[0*width + x] = cpu_y_edge_filter(buffer, x, 0, 1, width);
-        output[(height-1)*width + x] = cpu_y_edge_filter(buffer, x, height - 1, -1, width);
+        ScopeClock dummy(&cpu_time.transfer_from);
+        copy(pixels, output, width, height);
     }
-    for (int y = 1; y < height - 1; ++y)
-    {
-        output[y*width+0] = cpu_x_edge_filter(buffer, 0, y, 1, width);
-        output[y*width + width-1] = cpu_x_edge_filter(buffer, width-1, y, -1, width);
-    }
-    output[0*width + 0] = cpu_corner(buffer, 0, 0, 1, 1, width);
-    output[0*width + width-1] = cpu_corner(buffer, width-1, 0, -1, 1, width);
-    output[(height-1)*width+0] = cpu_corner(buffer, 0, height-1, 1, -1, width);
-    output[(height-1)*width + width-1] = cpu_corner(buffer, width-1, height-1, -1, -1, width);
-    
-    copy(pixels, output, width, height);
-    
     free(output);
     free(buffer);
 }

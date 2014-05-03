@@ -35,9 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/open_exr_io.o \
+	${OBJECTDIR}/ScopeClock.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/filters.o \
-	${OBJECTDIR}/file_system_operations.o
+	${OBJECTDIR}/common_filter.o \
+	${OBJECTDIR}/file_system_operations.o \
+	${OBJECTDIR}/cpu_filter.o
 
 
 # C Compiler Flags
@@ -69,20 +71,30 @@ ${OBJECTDIR}/open_exr_io.o: open_exr_io.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/open_exr_io.o open_exr_io.cpp
 
+${OBJECTDIR}/ScopeClock.o: ScopeClock.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ScopeClock.o ScopeClock.cpp
+
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/filters.o: filters.cpp 
+${OBJECTDIR}/common_filter.o: common_filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/filters.o filters.cpp
+	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/common_filter.o common_filter.cpp
 
 ${OBJECTDIR}/file_system_operations.o: file_system_operations.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/file_system_operations.o file_system_operations.cpp
+
+${OBJECTDIR}/cpu_filter.o: cpu_filter.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/usr/include -I/usr/include/OpenEXR -MMD -MP -MF $@.d -o ${OBJECTDIR}/cpu_filter.o cpu_filter.cpp
 
 # Subprojects
 .build-subprojects:
