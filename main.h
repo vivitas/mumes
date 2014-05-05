@@ -14,9 +14,17 @@
 using namespace std;
 
 /* files input and output */
-const string k_input_directory = "/media/filip/Local/dev/exr/";
-const string k_output_directory = "/media/filip/Local/dev/exr_output/";
-
+#ifndef MUMES_WINDOWS
+const string k_input_directory_exr = "/media/filip/Local/dev/exr/";
+const string k_output_directory_exr = "/media/filip/Local/dev/exr_output/";
+const string k_input_directory_myhdr = "/media/filip/Local/dev/my_hdr/";
+const string k_output_directory_myhdr = "/media/filip/Local/dev/my_hdr_output/";
+#else
+const string k_input_directory_exr = "J:\\dev\\exr\\";
+const string k_output_directory_exr = "J:\\dev\\exr_output\\";
+const string k_input_directory_myhdr = "J:\\dev\\my_hdr\\";
+const string k_output_directory_myhdr = "J:\\dev\\my_hdr_output\\";
+#endif
 struct t_times
 {
     int transfer_to;

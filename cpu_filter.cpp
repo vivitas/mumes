@@ -1,4 +1,4 @@
-#include <OpenEXR/half.h>
+#include <half.h>
 
 #include "common_filter.h"
 #include "cpu_filter.h"

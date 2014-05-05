@@ -1,6 +1,6 @@
 #include "common_filter.h"
 #include "stdlib.h"
-#include <cuda.h>
+
 void
 alloc_buffers
 (
@@ -20,7 +20,7 @@ to_my_rgba
 )
 {
     t_my_rgba dest;
-    dest.a = src.a.operator  float();
+    dest.a = (float) src.a;
     dest.r = src.r.operator  float();
     dest.g = src.g.operator  float();
     dest.b = src.b.operator  float();
@@ -32,7 +32,7 @@ from_my_rgba
         t_my_rgba &src
 )
 {
-    Rgba result(half(src.r), half(src.g), half(src.b), half(src.a));
+	Rgba result(half(src.r), half(src.g), half(src.b), half(src.a));
     return result;
 }
 

@@ -2,9 +2,6 @@
 #include "common_filter.h"
 #include "ScopeClock.h"
 
-#include <cuda.h>
-#include <cuda_runtime.h>
-
 #include <stdio.h>
 
 static void HandleError( cudaError_t err,

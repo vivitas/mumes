@@ -17,7 +17,7 @@ void
 writeRgba1
 (
         const char fileName[],
-        const Rgba *pixels,
+        Array2D<Rgba> &pixels,
         int width,
         int height
 );
