@@ -2,8 +2,8 @@
 void
 load_image
 (
-ILuint image,
-char* file
+	ILuint image,
+	char* file
 )
 {
 	ilBindImage(image);
@@ -13,8 +13,8 @@ char* file
 void
 copy_image
 (
-ILuint dst,
-ILuint src
+	ILuint dst,
+	ILuint src
 )
 {
 	ilBindImage(dst);
@@ -24,8 +24,8 @@ ILuint src
 void
 save_image
 (
-ILuint image,
-char *file
+	ILuint image,
+	char *file
 )
 {
 	ilBindImage(image);
@@ -36,11 +36,11 @@ char *file
 void
 get_raw_rgba
 (
-ILuint image,
-t_RGBA *&raw,
-int &width,
-int &height,
-int &depth
+	ILuint image,
+	t_RGBA *&raw,
+	int &width,
+	int &height,
+	int &depth
 )
 {
 	ilBindImage(image);
@@ -57,11 +57,11 @@ int &depth
 void
 set_raw_rgba
 (
-ILuint image,
-t_RGBA *raw,
-int width,
-int height,
-int depth
+	ILuint image,
+	t_RGBA *raw,
+	int width,
+	int height,
+	int depth
 )
 {
 	ilBindImage(image);

@@ -12,33 +12,33 @@ load_image
 void
 copy_image
 (
-ILuint dst,
-ILuint src
+	ILuint dst,
+	ILuint src
 );
 
 void
 save_image
 (
-ILuint image,
-char *file
+	ILuint image,
+	char *file
 );
 
 void
 get_raw_rgba
 (
-ILuint image,
-t_RGBA *&raw,
-int &width,
-int &height,
-int &depth
+	ILuint image,
+	t_RGBA *&raw,
+	int &width,
+	int &height,
+	int &depth
 );
 
 void
 set_raw_rgba
 (
-ILuint image,
-t_RGBA *raw,
-int width,
-int height,
-int depth
+	ILuint image,
+	t_RGBA *raw,
+	int width,
+	int height,
+	int depth
 );

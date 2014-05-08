@@ -14,8 +14,8 @@ struct t_RGBA
 void
 increment
 (
-t_RGBA &dest,
-t_RGBA src,
-float coef
+	t_RGBA &dest,
+	t_RGBA src,
+	float coef
 );
 #endif

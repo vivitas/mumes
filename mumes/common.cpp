@@ -2,9 +2,9 @@
 void
 increment
 (
-t_RGBA &dest,
-t_RGBA src,
-float coef
+	t_RGBA &dest,
+	t_RGBA src,
+	float coef
 )
 {
 	dest.r += src.r / coef;
