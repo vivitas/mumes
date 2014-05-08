@@ -1,4 +1,7 @@
 #include "common.h"
+/**
+ * TODO: comment
+ */
 t_RGBA
 cpu_avg_from_to
 (
@@ -12,6 +15,9 @@ cpu_avg_from_to
 	int height,
 	int depth
 );
+/**
+ * TODO: comment
+ */
 void
 cpu_filter
 (

@@ -18,6 +18,22 @@
     <Library Include="..\x86\lib\DevIL.lib" />
     <Library Include="..\x86\lib\ILU.lib" />
     <Library Include="..\x86\lib\ILUT.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cublas.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cublas_device.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cuda.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cudadevrt.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cudart.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cudart_static.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cufft.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cufftw.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\curand.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\cusparse.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\nppc.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\nppi.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\npps.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\nvcuvenc.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\nvcuvid.lib" />
+    <Library Include="..\..\cuda\toolkit\lib\Win32\OpenCL.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -43,5 +59,13 @@
     <ClInclude Include="cpu_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gpu_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="gpu_filter.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

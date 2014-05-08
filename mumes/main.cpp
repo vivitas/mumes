@@ -4,6 +4,7 @@
 
 #include "utilities.h"
 #include "cpu_filter.h"
+#include "gpu_filter.h"
 
 int main()
 {
@@ -25,19 +26,24 @@ int main()
 			throw "cannot set file mode properly";
 		
 		copy_image(cuda_image, image);
-		copy_image(cpu_image, image);
+		//copy_image(cpu_image, image);
 
 		int width, height, depth;
-		get_raw_rgba(cpu_image, cpu_raw, width, height, depth);
-		cpu_filter(cpu_raw, width, height, depth);
-		set_raw_rgba(cpu_image, cpu_raw, width, height, depth);
+		//get_raw_rgba(cpu_image, cpu_raw, width, height, depth);
+		//cpu_filter(cpu_raw, width, height, depth);
+		//set_raw_rgba(cpu_image, cpu_raw, width, height, depth);
+
+        get_raw_rgba(cuda_image, cuda_raw, width, height, depth);
+        gpu_filter(cuda_raw, width, height, depth);
+        set_raw_rgba(cuda_image, cuda_raw, width, height, depth);
 		
 
 		save_image(image, "J:/resources/exr_out/location_1_1_hdr.exr");
 		save_image(cuda_image, "J:/resources/exr_out/location_1_1_hdr_cuda.exr");
-		save_image(cpu_image, "J:/resources/exr_out/location_1_1_hdr_cpu.exr");
+		//save_image(cpu_image, "J:/resources/exr_out/location_1_1_hdr_cpu.exr");
 
-		delete[] cpu_raw;
+		//delete[] cpu_raw;
+        delete[] cuda_raw;
 	}
 	catch (char* c)
 	{
