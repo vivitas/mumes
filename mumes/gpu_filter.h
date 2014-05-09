@@ -9,3 +9,7 @@ gpu_filter
     int depth,
     int repetitions = 1
 );
+void
+prepare_cuda_device
+(
+);

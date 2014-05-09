@@ -7,7 +7,9 @@
 #include "gpu_filter.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
+#define NUM_OF_REPETITIONS 1
 
 #define __MUMES_CUDA_
 #define __MUMES_CPU_
@@ -25,14 +27,14 @@ process_file
 
 #ifdef __MUMES_CUDA_
     ILuint cuda_image = ilGenImage();
-    t_RGBA *cuda_raw;
+    t_RGBA *cuda_raw = NULL;
     t_timing cuda_time;
     string cuda_output(output_directory + "cuda_");
 #endif
 
 #ifdef __MUMES_CPU_
     ILuint cpu_image = ilGenImage();
-    t_RGBA *cpu_raw;
+    t_RGBA *cpu_raw = NULL;
     t_timing cpu_time;
     string cpu_output(output_directory + "cpu_");
 #endif
@@ -54,7 +56,7 @@ process_file
         copy_image(cuda_image, image);
 
         get_raw_rgba(cuda_image, cuda_raw, width, height, depth);
-        cuda_time = gpu_filter(cuda_raw, width, height, depth);
+        cuda_time = gpu_filter(cuda_raw, width, height, depth, NUM_OF_REPETITIONS);
         set_raw_rgba(cuda_image, cuda_raw, width, height, depth);
 
         cout << "gpu: " << endl;
@@ -66,6 +68,7 @@ process_file
         save_image(cuda_image, (cuda_output + file_name).c_str());
 
         delete[] cuda_raw;
+        cuda_raw = 0;
 
         stats << "\t" << cuda_time.transfer_time << "\t" << cuda_time.utilities_time << "\t" << cuda_time.processing_time;
         stats.flush();
@@ -75,7 +78,7 @@ process_file
         copy_image(cpu_image, image);
 
         get_raw_rgba(cpu_image, cpu_raw, width, height, depth);
-        cpu_time = cpu_filter(cpu_raw, width, height, depth);
+        cpu_time = cpu_filter(cpu_raw, width, height, depth, NUM_OF_REPETITIONS);
         set_raw_rgba(cpu_image, cpu_raw, width, height, depth);
 
         cout << "cpu: " << endl;
@@ -87,6 +90,7 @@ process_file
         save_image(cpu_image, (cpu_output + file_name).c_str());
 
         delete[] cpu_raw;
+        cpu_raw = 0;
 
         stats << "\t" << cpu_time.transfer_time << "\t" << cpu_time.utilities_time << "\t" << cpu_time.processing_time;
         stats.flush();
@@ -100,9 +104,17 @@ process_file
     }
     ilDeleteImage(image);
 #ifdef __MUMES_CUDA_
+    if(cuda_raw != NULL)
+    {
+        delete[] cuda_raw;
+    }
     ilDeleteImage(cuda_image);
 #endif
 #ifdef __MUMES_CPU_
+    if(cpu_raw != NULL)
+    {
+        delete[] cpu_raw;
+    }
     ilDeleteImage(cpu_image);
 #endif
     stats << endl;
@@ -111,14 +123,15 @@ process_file
 
 int main()
 {
-
 	ilInit();
 	iluInit();
 	ilutInit();
 	
     string input_directory("J:/resources/exr/");
     string original_output("J:/resources/exr_out/");
-    string stats_file_path("J:/resources/stats.csv");
+    ostringstream stats_file_path_geneator;
+    stats_file_path_geneator << "J:/resources/" << NUM_OF_REPETITIONS << "_stats.csv";
+    string stats_file_path(stats_file_path_geneator.str());
 
     ofstream stats_file;
     if(exists(stats_file_path))
@@ -138,7 +151,9 @@ int main()
         stats_file << endl;
         stats_file.flush();
     }
-       
+#ifdef __MUMES_CUDA_
+    prepare_cuda_device();
+#endif
     vector<string> all_input_files = get_all_files_from_directory(input_directory);
     for(auto i = all_input_files.begin(); i != all_input_files.end(); ++i)
     {

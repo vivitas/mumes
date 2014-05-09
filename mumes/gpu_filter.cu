@@ -65,30 +65,68 @@ gpu_filter
         HANDLE_ERROR(cudaMalloc(&gpu_src, width*height*depth*sizeof(t_RGBA)));
         HANDLE_ERROR(cudaMalloc(&gpu_dst, width*height*depth*sizeof(t_RGBA)));
     }
+    try
     {
-        ScopeTimer _dummy(&(result.transfer_time));
-        HANDLE_ERROR(cudaMemcpy(gpu_src, raw, width*height*depth*sizeof(t_RGBA), cudaMemcpyHostToDevice));
-    }
-    {
-        ScopeTimer _dummy(&(result.processing_time));
-        dim3 grid(width, height);
-        for(int i = 0; i < repetitions; ++i)
         {
-            gpu_kernel <<< grid, 4 >>> (gpu_src, gpu_dst, width, height, depth);
-            float* tmp = gpu_dst;
-            gpu_dst = gpu_src;
-            gpu_src = tmp;
-        }        
-        HANDLE_ERROR(cudaGetLastError());
+            ScopeTimer _dummy(&(result.transfer_time));
+            HANDLE_ERROR(cudaMemcpy(gpu_src, raw, width*height*depth*sizeof(t_RGBA), cudaMemcpyHostToDevice));
+        }
+        {
+            
+            dim3 grid(width, height);
+            for(int i = 0; i < repetitions; ++i)
+            {
+                {
+                    ScopeTimer _dummy(&(result.processing_time));
+                    gpu_kernel << < grid, 4 >> > (gpu_src, gpu_dst, width, height, depth);
+                    HANDLE_ERROR(cudaGetLastError());
+                }
+                {
+                    ScopeTimer _dummy(&(result.transfer_time));
+                    HANDLE_ERROR(cudaMemcpy(gpu_src, gpu_dst, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToDevice));
+                }
+            }        
+        }
+        {
+            ScopeTimer _dummy(&(result.transfer_time));
+            HANDLE_ERROR(cudaMemcpy(raw, gpu_src, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToHost));
+        }
+        {
+            ScopeTimer _dummy(&(result.utilities_time));
+            HANDLE_ERROR(cudaFree(gpu_src));
+            HANDLE_ERROR(cudaFree(gpu_dst));
+        }
     }
-    {
-        ScopeTimer _dummy(&(result.transfer_time));
-        HANDLE_ERROR(cudaMemcpy(raw, gpu_src, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToHost));
-    }
+    catch(char* c)
     {
         ScopeTimer _dummy(&(result.utilities_time));
-        cudaFree(gpu_src);
-        cudaFree(gpu_dst);
+        try
+        {
+            HANDLE_ERROR(cudaFree(gpu_src));
+        }
+        catch(...)
+        {
+        }
+        try
+        {
+            HANDLE_ERROR(cudaFree(gpu_dst));
+        }
+        catch(...)
+        {
+        }
+        throw c;
     }
     return result;
+}
+void
+prepare_cuda_device
+(
+)
+{
+    for(int i=0; i<10; ++i)
+    {
+        void* testMemory;
+        HANDLE_ERROR(cudaMalloc(&testMemory, 1024 * 768 * 4 * 4));
+        HANDLE_ERROR(cudaFree(testMemory));
+    }
 }
