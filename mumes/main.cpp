@@ -9,8 +9,6 @@
 #include <fstream>
 #include <sstream>
 
-#define NUM_OF_REPETITIONS 1
-
 #define __MUMES_CUDA_
 #define __MUMES_CPU_
 using namespace std;
@@ -56,7 +54,7 @@ process_file
         copy_image(cuda_image, image);
 
         get_raw_rgba(cuda_image, cuda_raw, width, height, depth);
-        cuda_time = gpu_filter(cuda_raw, width, height, depth, NUM_OF_REPETITIONS);
+        cuda_time = gpu_filter(cuda_raw, width, height, depth);
         set_raw_rgba(cuda_image, cuda_raw, width, height, depth);
 
         cout << "gpu: " << endl;
@@ -78,7 +76,7 @@ process_file
         copy_image(cpu_image, image);
 
         get_raw_rgba(cpu_image, cpu_raw, width, height, depth);
-        cpu_time = cpu_filter(cpu_raw, width, height, depth, NUM_OF_REPETITIONS);
+        cpu_time = cpu_filter(cpu_raw, width, height, depth);
         set_raw_rgba(cpu_image, cpu_raw, width, height, depth);
 
         cout << "cpu: " << endl;
@@ -130,7 +128,7 @@ int main()
     string input_directory("J:/resources/exr/");
     string original_output("J:/resources/exr_out/");
     ostringstream stats_file_path_geneator;
-    stats_file_path_geneator << "J:/resources/" << NUM_OF_REPETITIONS << "_stats.csv";
+    stats_file_path_geneator << "J:/resources/" << "_stats.csv";
     string stats_file_path(stats_file_path_geneator.str());
 
     ofstream stats_file;
@@ -160,5 +158,5 @@ int main()
         process_file(*i, input_directory, original_output, stats_file);
     }
     stats_file.close();
-	MessageBox(NULL, (LPCSTR)"Finished!", (LPCSTR)"Info", NULL);
+	//MessageBox(NULL, (LPCSTR)"Finished!", (LPCSTR)"Info", NULL);
 }
