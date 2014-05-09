@@ -105,3 +105,19 @@ get_all_files_from_directory
 
     return result;
 }
+bool
+exists
+(
+    const std::string& name
+)
+{
+    if(FILE *file = fopen(name.c_str(), "r"))
+    {
+        fclose(file);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

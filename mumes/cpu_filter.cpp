@@ -31,6 +31,7 @@ cpu_avg_from_to
 	}
 	return result;
 }
+
 t_timing
 cpu_filter
 (

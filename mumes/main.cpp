@@ -6,6 +6,8 @@
 #include "cpu_filter.h"
 #include "gpu_filter.h"
 #include <iostream>
+#include <fstream>
+
 
 #define __MUMES_CUDA_
 #define __MUMES_CPU_
@@ -15,7 +17,8 @@ process_file
 (
     string file_name,
     string input_directory,
-    string output_directory
+    string output_directory,
+    ofstream &stats
 )
 {
     ILuint image = ilGenImage();
@@ -40,7 +43,12 @@ process_file
         if(ilEnable(IL_FILE_OVERWRITE) != IL_TRUE)
             throw "cannot set file mode properly";
 
-        int width, height, depth;
+        int width = ilGetInteger(IL_IMAGE_WIDTH);
+        int height = ilGetInteger(IL_IMAGE_HEIGHT);
+        int depth = ilGetInteger(IL_IMAGE_DEPTH);
+
+        stats << file_name << "\t" << width << "\t" << height << "\t" << depth;
+        stats.flush();
 
 #ifdef __MUMES_CUDA_
         copy_image(cuda_image, image);
@@ -58,6 +66,9 @@ process_file
         save_image(cuda_image, (cuda_output + file_name).c_str());
 
         delete[] cuda_raw;
+
+        stats << "\t" << cuda_time.transfer_time << "\t" << cuda_time.utilities_time << "\t" << cuda_time.processing_time;
+        stats.flush();
 #endif
 
 #ifdef __MUMES_CPU_
@@ -76,13 +87,16 @@ process_file
         save_image(cpu_image, (cpu_output + file_name).c_str());
 
         delete[] cpu_raw;
+
+        stats << "\t" << cpu_time.transfer_time << "\t" << cpu_time.utilities_time << "\t" << cpu_time.processing_time;
+        stats.flush();
 #endif
 
-        save_image(image, "J:/resources/exr_out/location_1_1_hdr.exr");
+        save_image(image, (output_directory+file_name).c_str());
     }
     catch(char* c)
     {
-        MessageBox(NULL, (LPCSTR) c, (LPCSTR)"error ocured", NULL);
+       cout<< endl << c << endl;
     }
     ilDeleteImage(image);
 #ifdef __MUMES_CUDA_
@@ -91,8 +105,10 @@ process_file
 #ifdef __MUMES_CPU_
     ilDeleteImage(cpu_image);
 #endif
-
+    stats << endl;
+    stats.flush();
 }
+
 int main()
 {
 
@@ -102,11 +118,32 @@ int main()
 	
     string input_directory("J:/resources/exr/");
     string original_output("J:/resources/exr_out/");
+    string stats_file_path("J:/resources/stats.csv");
 
+    ofstream stats_file;
+    if(exists(stats_file_path))
+    {
+        stats_file.open(stats_file_path, ios_base::app);
+    }
+    else
+    {
+        stats_file.open(stats_file_path, ios_base::app);
+        stats_file << "image\t" << "width\t" << "height\t" << "depth";
+#ifdef __MUMES_CUDA_
+        stats_file << "\tcuda transfer\t" << "cuda util\t" << "cuda process";
+#endif
+#ifdef __MUMES_CPU_
+        stats_file << "\tcpu transfer\t" << "cpu util\t" << "cpu process";
+#endif
+        stats_file << endl;
+        stats_file.flush();
+    }
+       
     vector<string> all_input_files = get_all_files_from_directory(input_directory);
     for(auto i = all_input_files.begin(); i != all_input_files.end(); ++i)
     {
-        process_file(*i, input_directory, original_output);
-    }	
+        process_file(*i, input_directory, original_output, stats_file);
+    }
+    stats_file.close();
 	MessageBox(NULL, (LPCSTR)"Finished!", (LPCSTR)"Info", NULL);
 }

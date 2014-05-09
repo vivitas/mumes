@@ -2,17 +2,16 @@
 #include "cuda_runtime.h"
 #include <stdio.h>
 #include "ScopeTimer.h"
+static char error[1024];
 static void HandleError(cudaError_t err,
                         const char *file,
                         int line)
 {
     if(err != cudaSuccess)
-    {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err),
+    {        
+        sprintf(error, "%s in %s at line %d\n", cudaGetErrorString(err),
                file, line);
-        getchar();
-        getchar();
-        exit(EXIT_FAILURE);
+        throw error;
     }
 }
 #define MAX(A, B) (A>B?A:B)
@@ -48,6 +47,7 @@ gpu_kernel
     }
     dst[threadIdx.x + 4 * blockIdx.x + 4 * width * blockIdx.y] = b;
 }
+
 t_timing
 gpu_filter
 (

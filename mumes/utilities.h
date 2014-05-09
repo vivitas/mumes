@@ -52,3 +52,8 @@ get_all_files_from_directory
 (
     string directory
 );
+bool
+exists
+(
+    const std::string& name
+);
