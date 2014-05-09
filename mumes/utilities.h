@@ -1,12 +1,16 @@
 #pragma once
 #include "IL\il.h"
 #include "common.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 
 void
 load_image
 (
 	ILuint image,
-	char* file
+	const char* file
 );
 
 void
@@ -20,7 +24,7 @@ void
 save_image
 (
 	ILuint image,
-	char *file
+	const char *file
 );
 
 void
@@ -41,4 +45,10 @@ set_raw_rgba
 	int width,
 	int height,
 	int depth
+);
+
+vector<string>
+get_all_files_from_directory
+(
+    string directory
 );

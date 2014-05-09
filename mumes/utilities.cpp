@@ -1,9 +1,10 @@
 #include "utilities.h"
+#include <Windows.h>
 void
 load_image
 (
 	ILuint image,
-	char* file
+	const char* file
 )
 {
 	ilBindImage(image);
@@ -25,7 +26,7 @@ void
 save_image
 (
 	ILuint image,
-	char *file
+	const char *file
 )
 {
 	ilBindImage(image);
@@ -70,4 +71,37 @@ set_raw_rgba
 		throw "currently only 4-channel pictures are supported";
 	ilSetPixels(0, 0, 0, width, height, depth, IL_RGBA, IL_FLOAT, raw);
 	return;
+}
+
+vector<string>
+get_all_files_from_directory
+(
+    string directory
+)
+{
+    vector<string> result;
+    HANDLE entry;
+    WIN32_FIND_DATA file_data;
+
+    if((entry = FindFirstFile((directory + "/*").c_str(), &file_data)) == INVALID_HANDLE_VALUE)
+        return result;
+
+    do
+    {
+        const string file_name = file_data.cFileName;
+        const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+
+        if(file_name[0] == '.')
+            continue;
+
+        if(is_directory)
+            continue;
+
+        result.push_back(file_name);
+    }
+    while(FindNextFile(entry, &file_data));
+
+    FindClose(entry);
+
+    return result;
 }
