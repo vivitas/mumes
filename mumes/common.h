@@ -26,4 +26,12 @@ increment
 	t_RGBA src,
 	float coef
 );
+
+struct t_timing
+{
+    int transfer_time;
+    int utilities_time;
+    int processing_time;
+    t_timing() : transfer_time(0), utilities_time(0), processing_time(0){}
+};
 #endif

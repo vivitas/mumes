@@ -18,11 +18,12 @@ cpu_avg_from_to
 /**
  * TODO: comment
  */
-void
+t_timing
 cpu_filter
 (
-	t_RGBA *raw,
+	t_RGBA *&raw,
 	int width,
 	int height,
-	int depth
+	int depth,
+    int repetitions = 1
 );

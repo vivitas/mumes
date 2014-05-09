@@ -1,6 +1,7 @@
 #include "gpu_filter.h"
 #include "cuda_runtime.h"
 #include <stdio.h>
+#include "ScopeTimer.h"
 static void HandleError(cudaError_t err,
                         const char *file,
                         int line)
@@ -47,23 +48,47 @@ gpu_kernel
     }
     dst[threadIdx.x + 4 * blockIdx.x + 4 * width * blockIdx.y] = b;
 }
-void
+t_timing
 gpu_filter
 (
-    t_RGBA *raw,
+    t_RGBA *&raw,
     int width,
     int height,
-    int depth
+    int depth,
+    int repetitions
 )
 {
+    t_timing result;
     float *gpu_src, *gpu_dst;
-    HANDLE_ERROR(cudaMalloc(&gpu_src, width*height*depth*sizeof(t_RGBA)));
-    HANDLE_ERROR(cudaMalloc(&gpu_dst, width*height*depth*sizeof(t_RGBA)));
-    HANDLE_ERROR(cudaMemcpy(gpu_src, raw, width*height*depth*sizeof(t_RGBA), cudaMemcpyHostToDevice));
-    dim3 grid(width, height);
-    gpu_kernel <<< grid, 4 >> > (gpu_src, gpu_dst, width, height, depth);
-    HANDLE_ERROR(cudaGetLastError());
-    HANDLE_ERROR(cudaMemcpy(raw, gpu_dst, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToHost));
-    cudaFree(gpu_src);
-    cudaFree(gpu_dst);
+    {
+        ScopeTimer _dummy(&(result.utilities_time));
+        HANDLE_ERROR(cudaMalloc(&gpu_src, width*height*depth*sizeof(t_RGBA)));
+        HANDLE_ERROR(cudaMalloc(&gpu_dst, width*height*depth*sizeof(t_RGBA)));
+    }
+    {
+        ScopeTimer _dummy(&(result.transfer_time));
+        HANDLE_ERROR(cudaMemcpy(gpu_src, raw, width*height*depth*sizeof(t_RGBA), cudaMemcpyHostToDevice));
+    }
+    {
+        ScopeTimer _dummy(&(result.processing_time));
+        dim3 grid(width, height);
+        for(int i = 0; i < repetitions; ++i)
+        {
+            gpu_kernel <<< grid, 4 >>> (gpu_src, gpu_dst, width, height, depth);
+            float* tmp = gpu_dst;
+            gpu_dst = gpu_src;
+            gpu_src = tmp;
+        }        
+        HANDLE_ERROR(cudaGetLastError());
+    }
+    {
+        ScopeTimer _dummy(&(result.transfer_time));
+        HANDLE_ERROR(cudaMemcpy(raw, gpu_src, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToHost));
+    }
+    {
+        ScopeTimer _dummy(&(result.utilities_time));
+        cudaFree(gpu_src);
+        cudaFree(gpu_dst);
+    }
+    return result;
 }

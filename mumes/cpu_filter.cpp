@@ -2,6 +2,8 @@
 #include "common.h"
 #include <algorithm>
 
+#include "ScopeTimer.h"
+
 using namespace std;
 
 t_RGBA
@@ -29,36 +31,48 @@ cpu_avg_from_to
 	}
 	return result;
 }
-void
+t_timing
 cpu_filter
 (
-	t_RGBA *raw,
+	t_RGBA *&raw,
 	int width,
 	int height,
-	int depth
+	int depth,
+    int repetitions
 )
 {
-	t_RGBA *buffer = new t_RGBA[width*height*depth];
-	for (int z = 0; z < depth; ++z)
-	{
-		for (int y = 0; y < height; ++y)
-		{
-			for (int x = 0; x < width; ++x)
-			{
-				int y_from = std::max(y - 1, 0);
-				int x_from = std::max(x - 1, 0);
-				int y_to = std::min(y + 1, height - 1);
-				int x_to = std::min(x + 1, width - 1);
-				buffer[CORDS(x, y, z)] = cpu_avg_from_to(raw, x_from, x_to, y_from, y_to, z, width, height, depth);
-			}
-		}
-		for (int y = 0; y < height; ++y)
-		{
-			for (int x = 0; x < width; ++x)
-			{
-				raw[CORDS(x, y, z)] = buffer[CORDS(x, y, z)];
-			}
-		}
-	}
-	delete[] buffer;
+    t_timing times;
+    t_RGBA *buffer;
+    {
+        ScopeTimer _dummy(&(times.utilities_time));
+        buffer = new t_RGBA[width*height*depth];
+    }
+    {
+        ScopeTimer _dummy(&(times.processing_time));
+        for(int i = 0; i < repetitions; i++)
+        {
+            for(int z = 0; z < depth; ++z)
+            {
+                for(int y = 0; y < height; ++y)
+                {
+                    for(int x = 0; x < width; ++x)
+                    {
+                        int y_from = std::max(y - 1, 0);
+                        int x_from = std::max(x - 1, 0);
+                        int y_to = std::min(y + 1, height - 1);
+                        int x_to = std::min(x + 1, width - 1);
+                        buffer[CORDS(x, y, z)] = cpu_avg_from_to(raw, x_from, x_to, y_from, y_to, z, width, height, depth);
+                    }
+                }
+            }
+            t_RGBA *tmp = raw;
+            raw = buffer;
+            buffer = tmp;
+        }
+    }
+    {
+        ScopeTimer _dummy(&(times.utilities_time));
+        delete[] buffer;
+    }
+    return times;
 }
