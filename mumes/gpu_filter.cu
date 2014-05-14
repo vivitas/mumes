@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "ScopeTimer.h"
 
-#define TPB 64
+#define TPB 512
 
 static char error[1024];
 static void HandleError(cudaError_t err,
@@ -73,12 +73,14 @@ gpu_filter
         ScopeTimer _dummy(&(result.utilities_time));
         HANDLE_ERROR(cudaMalloc(&gpu_src, width*height*depth*sizeof(t_RGBA)));
         HANDLE_ERROR(cudaMalloc(&gpu_dst, width*height*depth*sizeof(t_RGBA)));
+        cudaDeviceSynchronize();
     }
     try
     {
         {
             ScopeTimer _dummy(&(result.transfer_time));
             HANDLE_ERROR(cudaMemcpy(gpu_src, raw, width*height*depth*sizeof(t_RGBA), cudaMemcpyHostToDevice));
+            cudaDeviceSynchronize();
         }
         {
             
@@ -89,22 +91,24 @@ gpu_filter
                     ScopeTimer _dummy(&(result.processing_time));
                     gpu_kernel << < grid, TPB >> > (gpu_src, gpu_dst, width, height, depth);
                     HANDLE_ERROR(cudaGetLastError());
-                
-                    t_RGBA *tmp;
-                    tmp = gpu_src;
-                    gpu_src = gpu_dst;
-                    gpu_dst = tmp;
+                    cudaDeviceSynchronize();
                 }
+                t_RGBA *tmp;
+                tmp = gpu_src;
+                gpu_src = gpu_dst;
+                gpu_dst = tmp;
             }        
         }
         {
             ScopeTimer _dummy(&(result.transfer_time));
             HANDLE_ERROR(cudaMemcpy(raw, gpu_src, width*height*depth*sizeof(t_RGBA), cudaMemcpyDeviceToHost));
+            cudaDeviceSynchronize();
         }
         {
             ScopeTimer _dummy(&(result.utilities_time));
             HANDLE_ERROR(cudaFree(gpu_src));
             HANDLE_ERROR(cudaFree(gpu_dst));
+            cudaDeviceSynchronize();
         }
     }
     catch(char* c)
@@ -124,8 +128,10 @@ gpu_filter
         catch(...)
         {
         }
+        cudaDeviceSynchronize();
         throw c;
     }
+
     return result;
 }
 void

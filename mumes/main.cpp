@@ -11,6 +11,9 @@
 
 #define __MUMES_CUDA_
 #define __MUMES_CPU_
+
+int NUM_OF_REPETITIONS = 1;
+
 using namespace std;
 void
 process_file
@@ -54,7 +57,7 @@ process_file
         copy_image(cuda_image, image);
 
         get_raw_rgba(cuda_image, cuda_raw, width, height, depth);
-        cuda_time = gpu_filter(cuda_raw, width, height, depth);
+        cuda_time = gpu_filter(cuda_raw, width, height, depth, NUM_OF_REPETITIONS);
         set_raw_rgba(cuda_image, cuda_raw, width, height, depth);
 
         cout << "gpu: " << endl;
@@ -76,7 +79,7 @@ process_file
         copy_image(cpu_image, image);
 
         get_raw_rgba(cpu_image, cpu_raw, width, height, depth);
-        cpu_time = cpu_filter(cpu_raw, width, height, depth);
+        cpu_time = cpu_filter(cpu_raw, width, height, depth, NUM_OF_REPETITIONS);
         set_raw_rgba(cpu_image, cpu_raw, width, height, depth);
 
         cout << "cpu: " << endl;
@@ -115,15 +118,20 @@ process_file
     }
     ilDeleteImage(cpu_image);
 #endif
-    stats << endl;
+    stats << "\t" << NUM_OF_REPETITIONS << endl;
     stats.flush();
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	ilInit();
 	iluInit();
 	ilutInit();
+
+    if(argc > 1)
+    {
+        NUM_OF_REPETITIONS = atoi(argv[1]);
+    }
 	
     string input_directory("J:/resources/exr/");
     string original_output("J:/resources/exr_out/");
@@ -146,7 +154,7 @@ int main()
 #ifdef __MUMES_CPU_
         stats_file << "\tcpu transfer\t" << "cpu util\t" << "cpu process";
 #endif
-        stats_file << endl;
+        stats_file << "\t" << "N" << endl;
         stats_file.flush();
     }
 #ifdef __MUMES_CUDA_
